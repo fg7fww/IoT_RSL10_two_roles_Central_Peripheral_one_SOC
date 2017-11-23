@@ -10,5 +10,5 @@ Two roles Central and Peripheral in one SOC.
 - Board RSL10 QFN IoT EVB V1.0 http://www.onsemi.com/PowerSolutions/evalBoard.do?id=BLE-IOT-GEVB
 - IDE eclipse http://www.onsemi.com/PowerSolutions/supportDoc.do?type=software&rpn=RSL10 libraries and headers taken from version 1.2
 
-
-
+2017.11.23 RSL10 side firmware update
+BLE connection of Central and Peripheral devices improvement. Sources are debug and updates in the new eclipse IDE enviroment release 1.3.4 Now central and peripheral devices are connected immediately.
