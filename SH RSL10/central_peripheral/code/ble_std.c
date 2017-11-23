@@ -62,6 +62,7 @@ void BLE_Initialize(void)
                                       {0x00,0x00,0x00,0x00,0x00,0x00} };
     uint8_t default_addr[BDADDR_LENGTH] = PRIVATE_BDADDR;
     uint8_t default_addr_central[BDADDR_LENGTH] = PRIVATE_BDADDR_CENTRAL;
+    app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 
     /* Seed the random number generator */
     srand(1);
@@ -195,6 +196,7 @@ int GAPM_ProfileAddedInd(ke_msg_id_t const msg_id,
                          ke_task_id_t const dest_id,
                          ke_task_id_t const src_id)
 {
+	app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
     /* If the application is creating its attribute database, continue to add
      * services; otherwise do nothing. */
     if(ble_env[0].state == APPM_CREATE_DB)
@@ -245,6 +247,7 @@ int GAPM_CmpEvt(ke_msg_id_t const msg_id, struct gapm_cmp_evt const *param,
                 ke_task_id_t const dest_id, ke_task_id_t const src_id)
 {
     struct gapm_set_dev_config_cmd* cmd;
+    app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 
     switch(param->operation)
     {
@@ -539,6 +542,7 @@ int GAPC_ConnectionReqInd(ke_msg_id_t const msg_id,
 {
     /* Instantiate connection confirmation message structure */
     struct gapc_connection_cfm *cfm;
+    app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 
     /* Index of app_env representing role of the application */
     int device_indx;
@@ -617,7 +621,6 @@ int GAPC_ConnectionReqInd(ke_msg_id_t const msg_id,
     {
         //BLE_Connection_SelectBegin(DEVICE_NUM_PERIPHERAL);
         /* Application role control */
-        app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
         if(app_env.app_role_control>0)
         {
         	BLE_Connection_SelectBegin(DEVICE_NUM_PERIPHERAL);
@@ -774,6 +777,7 @@ void Connection_SendStartCmd(void)
     uint8_t peerAddress0[BD_ADDR_LEN] =DIRECT_PEER_BD_ADDRESS;
     uint8_t peerAddress0_central[BD_ADDR_LEN] =DIRECT_PEER_BD_ADDRESS_CENTRAL;
     struct gapm_start_connection_cmd *cmd;
+    app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 
     /* Prepare the GAPM_START_CONNECTION_CMD message  */
     cmd = KE_MSG_ALLOC_DYN(GAPM_START_CONNECTION_CMD, TASK_GAPM, TASK_APP,
@@ -964,7 +968,7 @@ int APP_SwitchRole_Timeout(ke_msg_id_t const msg_id, void const *param,
         BLE_Operation_Cancel(DEVICE_NUM_CENTRAL);
     }
 	 */
-
+	app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
     uint8_t device_indx = DeviceIndx(KE_IDX_GET(src_id));
 
     if(app_env.app_role_control>0)
@@ -1055,3 +1059,23 @@ void BLE_Connection_SelectBegin(uint8_t device_indx)
         }
     }
 }
+
+
+void Connection_Disconnect(ke_task_id_t const src_id)
+{
+
+	uint8_t device_indx = DeviceIndx(KE_IDX_GET(src_id));
+
+    struct gapc_disconnect_cmd *cmd = KE_MSG_ALLOC(GAPC_DISCONNECT_CMD,
+                                                   KE_BUILD_ID(TASK_GAPC, ble_env[device_indx].conidx),
+                                                   TASK_APP, gapc_disconnect_cmd);
+
+    ble_env[device_indx].state = APPM_READY;
+
+    cmd->operation = GAPC_DISCONNECT;
+    cmd->reason = CO_ERROR_REMOTE_USER_TERM_CON;
+
+    /* Send the message */
+    ke_msg_send(cmd);
+}
+

@@ -71,6 +71,8 @@ int APP_Timer(ke_msg_id_t const msg_id,
               ke_task_id_t const src_id)
 {
     uint16_t level;
+    app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
+    uint8_t device_indx = DeviceIndx(KE_IDX_GET(src_id));
 
     /* Restart timer */
     ke_timer_set(APP_TEST_TIMER, TASK_APP, TIMER_200MS_SETTING);
@@ -81,9 +83,42 @@ int APP_Timer(ke_msg_id_t const msg_id,
     {
         Sys_GPIO_Set_High(LED_DIO_NUM);
     }
+    else if((ble_env[DEVICE_NUM_PERIPHERAL].state == APPM_READY)&&
+    		(app_env.app_role_control > 0))
+    {
+    	Advertising_Start();
+    }
+    /*
+    else if((app_env.app_role_control == 0)&&
+    		(ble_env[DEVICE_NUM_CENTRAL].state > APPM_READY)&&
+    		//(ble_env[DEVICE_NUM_CENTRAL].state != APPM_CONNECTING)&&
+    		(ble_env[DEVICE_NUM_CENTRAL].state != APPM_CONNECTED)
+    		)
+    {
+    	Sys_GPIO_Toggle(LED_DIO_NUM);
+    	//Sys_BootROM_Reset();
+    	//Connection_SendStartCmd();
+    }
+    */
+    else if((ble_env[DEVICE_NUM_CENTRAL].state == APPM_READY)&&
+    		(app_env.app_role_control == 0))
+    {
+    	//Connection_Disconnect(src_id);
+    	Connection_SendStartCmd();
+    }
     else if((ble_env[DEVICE_NUM_CENTRAL].state == APPM_CONNECTING) ||
             (ble_env[DEVICE_NUM_PERIPHERAL].state == APPM_ADVERTISING))
     {
+        //Sys_GPIO_Toggle(LED_DIO_NUM);
+        // Testing
+        if((device_indx==DEVICE_NUM_MAX) 	// Not connected
+        &&(app_env.app_role_control == 0)	// Only for client
+        		)
+        {
+        	//Connection_SendStartCmd();
+        	Sys_BootROM_Reset();	// This is working, devices are immediately self connected.
+        							// But it is whole client system reinitialisation
+        }
         Sys_GPIO_Toggle(LED_DIO_NUM);
     }
     else

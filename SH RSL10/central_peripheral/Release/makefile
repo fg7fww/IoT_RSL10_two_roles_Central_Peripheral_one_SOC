@@ -37,14 +37,11 @@ central_peripheral.siz \
 # All Target
 all: central_peripheral.elf secondary-outputs
 
-dependents:
-	-cd C:/Users/fg7fww/_Install/App/DemoBoards/RSL10/workspace_r1.3.4_test/central_peripheral/Release && $(MAKE) all
-
 # Tool invocations
-central_peripheral.elf: $(OBJS) $(USER_OBJS) C:/Users/fg7fww/_Install/App/DemoBoards/RSL10/workspace_r1.3.4_test/central_peripheral/Release/central_peripheral.elf
+central_peripheral.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g -T "C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\configuration\sections.ld" -nostartfiles -Xlinker --gc-sections -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\release" -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\ble_core\release" -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\ble_profiles\release" -Wl,-Map,"central_peripheral.map" --specs=nano.specs -o "central_peripheral.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -mcpu=cortex-m3 -mthumb -O2 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g -T "C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\configuration\sections.ld" -nostartfiles -Xlinker --gc-sections -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\release" -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\ble_core\release" -L"C:\Program Files (x86)\ON Semiconductor\RSL10 EDK\eclipse\..\lib\ble_profiles\release" -Wl,-Map,"central_peripheral.map" --specs=nano.specs -o "central_peripheral.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -69,6 +66,5 @@ secondary-outputs: $(SECONDARY_FLASH) $(SECONDARY_SIZE)
 
 .PHONY: all clean dependents
 .SECONDARY:
-C:/Users/fg7fww/_Install/App/DemoBoards/RSL10/workspace_r1.3.4_test/central_peripheral/Release/central_peripheral.elf:
 
 -include ../makefile.targets

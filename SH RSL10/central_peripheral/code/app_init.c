@@ -121,6 +121,8 @@ void App_Initialize(void)
     Sys_DIO_Config(8, DIO_NO_PULL | DIO_MODE_GPIO_IN_0);
 
     /* Application role control */
+    //uint32_t delay = (uint32_t) 2048; //Delay for data input pin scan
+    //while (delay>0){delay--;}
     app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 
 

@@ -203,6 +203,7 @@ extern void Advertising_Start(void);
 extern uint8_t DeviceIndx(uint8_t conidx);
 extern void BLE_Operation_Cancel(int device_indx);
 extern void BLE_Connection_SelectBegin(uint8_t device_indx);
+extern void Connection_Disconnect(ke_task_id_t const src_id);
 
 /* Bluetooth event and message handlers */
 extern int GAPM_ProfileAddedInd(ke_msg_id_t const msgid,

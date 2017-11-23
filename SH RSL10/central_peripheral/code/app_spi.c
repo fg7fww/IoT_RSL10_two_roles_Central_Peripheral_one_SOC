@@ -8,7 +8,7 @@
 #include "app.h"
 void DMA0_IRQHandler(void)
 {
-	//uint32_t dio8 = DIO->DATA & (1 << ((uint32_t) 8));
+	app_env.app_role_control = DIO->DATA & (1 << ((uint32_t) 8));
 	switch ((uint32_t) SPI1->RX_DATA)
 	{
 		case DMA_SPI1R_DUMMY:

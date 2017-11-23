@@ -3,6 +3,7 @@
 	<name>central_peripheral</name>
 	<comment></comment>
 	<projects>
+		<project>central_peripheral</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
