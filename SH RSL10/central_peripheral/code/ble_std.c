@@ -591,14 +591,8 @@ int GAPC_ConnectionReqInd(ke_msg_id_t const msg_id,
         /* Send the message */
         ke_msg_send(cfm);
 
-        /* If the application is central role */
-        if (device_indx == DEVICE_NUM_CENTRAL)
-        {
-            /* After connection, clear the timer */
-            ke_timer_clear(APP_SWITCH_ROLE_TIMEOUT, TASK_APP);
-        }
-        /* If the application is peripheral role */
-        else if (device_indx == DEVICE_NUM_PERIPHERAL)
+        /* If the application is central or peripheral role */
+        if ((device_indx == DEVICE_NUM_CENTRAL)||(device_indx == DEVICE_NUM_PERIPHERAL))
         {
             /* After connection, clear the timer */
             ke_timer_clear(APP_SWITCH_ROLE_TIMEOUT, TASK_APP);
@@ -973,14 +967,16 @@ int APP_SwitchRole_Timeout(ke_msg_id_t const msg_id, void const *param,
 
     if(app_env.app_role_control>0)
     {
-    	if(device_indx!=DEVICE_NUM_PERIPHERAL)
+    	if((device_indx!=DEVICE_NUM_PERIPHERAL)&&
+    		(ble_env[DEVICE_NUM_CENTRAL].state == APPM_CONNECTING))
     	{
     		BLE_Operation_Cancel(device_indx);
     	}
     }
     else
     {
-    	if(device_indx!=DEVICE_NUM_CENTRAL)
+    	if((device_indx!=DEVICE_NUM_CENTRAL)&&
+    		(ble_env[DEVICE_NUM_PERIPHERAL].state == APPM_ADVERTISING))
     	{
     		BLE_Operation_Cancel(device_indx);
     	}

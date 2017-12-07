@@ -113,6 +113,7 @@ int APP_Timer(ke_msg_id_t const msg_id,
         // Testing
         if((device_indx==DEVICE_NUM_MAX) 	// Not connected
         &&(app_env.app_role_control == 0)	// Only for client
+        &&(DIO->DATA & (1 << ((uint32_t) LED_DIO_NUM)))	// LED original functionality
         		)
         {
         	//Connection_SendStartCmd();
