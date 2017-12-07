@@ -13,3 +13,6 @@ Two roles Central and Peripheral in one SOC.
 2017.11.23 
 RSL10 side firmware update
 BLE connection of Central and Peripheral devices improvement. Sources are debugged and updated in the new eclipse IDE enviroment release 1.3.4 Now central and peripheral devices are connected immediately.
+
+2017.12.07
+Only small update to save original LED connection indicator functionality
